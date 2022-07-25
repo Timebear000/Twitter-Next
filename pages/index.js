@@ -6,8 +6,13 @@ import { getProviders, getSession, useSession } from "next-auth/react";
 // import styles from "../styles/Home.module.css";
 // import styles from "../styles/globals.css";
 import Login from "../components/Login";
+import Modal from "../components/Modal";
+import { modalStatus } from "../store/StatusStore";
+
 export default function Home({ trendingResults, followResults, providers }) {
   const { data: session } = useSession();
+  const isOpen = modalStatus((state) => state.modalState);
+
   if (!session) {
     return (
       <>
@@ -30,6 +35,7 @@ export default function Home({ trendingResults, followResults, providers }) {
         <Feed />
         {/* Widgets */}
         {/* Modal */}
+        {isOpen && <Modal />}
       </main>
     </div>
   );
