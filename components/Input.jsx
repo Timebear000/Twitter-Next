@@ -3,12 +3,17 @@ import Image from "next/image";
 import { PhotographIcon, XIcon, ChartBarIcon, EmojiHappyIcon, CalendarIcon } from "@heroicons/react/outline";
 import data from "@emoji-mart/data";
 
+// Auth
+import { useSession } from "next-auth/react";
+
 // Firebase
 import { db, storage } from "../firebase";
 import { addDoc, collection, doc, serverTimestamp, updateDoc } from "@firebase/firestore";
 import { getDownloadURL, ref, uploadString } from "@firebase/storage";
 
 const Input = () => {
+  const { data: session } = useSession();
+
   const [input, setInput] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
   const filePickerRef = useRef(null);
@@ -20,10 +25,10 @@ const Input = () => {
     setLoading(true);
 
     const docRef = await addDoc(collection(db, "posts"), {
-      // id: session.user.uid,
-      // username: session.user.name,
-      // userImg: session.user.image,
-      // tag: session.user.tag,
+      id: session.user.uid,
+      username: session.user.name,
+      userImg: session.user.image,
+      tag: session.user.tag,
       text: input,
       timestamp: serverTimestamp(),
     });
@@ -64,11 +69,7 @@ const Input = () => {
 
   return (
     <div className={`border-b border-gray-700 p-3 flex space-x-3   overflow-y-scroll  ${loading && "opacity-60"}`}>
-      <img
-        src="https://lh3.googleusercontent.com/a-/AFdZucqGa2RdKzvFg6BeSn0xa-fhhZswIKxEzcVU4Vjh=s32"
-        alt="프로필 이미지"
-        className="rounded-full cursor-pointer w-11 h-11"
-      />
+      <img src={session.user.image} alt="프로필 이미지" className="rounded-full cursor-pointer w-11 h-11" />
       <div className=" divide-y divide-gray-700  w-full">
         <div className={`${selectedFile && "pb-7"} ${input && "space-y-2.5"}`}>
           <textarea
