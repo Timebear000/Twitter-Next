@@ -1,5 +1,6 @@
 import Head from "next/head";
 import Image from "next/image";
+import Feed from "../components/Feed";
 import SideBar from "../components/SideBar";
 // import styles from "../styles/Home.module.css";
 // import styles from "../styles/globals.css";
@@ -15,6 +16,7 @@ export default function Home() {
         {/* SideBar */}
         <SideBar />
         {/* Feed */}
+        <Feed />
         {/* Widgets */}
         {/* Modal */}
       </main>
