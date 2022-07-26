@@ -49,6 +49,12 @@ function PostPage({ trendingResults, followResults, providers }) {
         <title>
           {post?.username} on Twitter: {post?.text}
         </title>
+        <meta name="description" content={post?.text} />
+        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+        <meta property="og:title" content={`${post?.username} on Twitter`} />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content={post?.image} />
+        <meta property="og:article:author" content={session.user.name} />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="bg-black min-h-screen flex max-w-[1500px] mx-auto">
