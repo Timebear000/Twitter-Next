@@ -14,10 +14,10 @@ import { ArrowLeftIcon } from "@heroicons/react/solid";
 import Head from "next/head";
 import { modalStatus } from "../store/StatusStore";
 import Widgets from "../components/Widgets";
-function PostPage({ trendingResults, followResults, providers }) {
+function PostPage({ trendingResults, followResults, providers, initPost }) {
   const { data: session } = useSession();
   const isOpen = modalStatus((state) => state.modalState);
-  const [post, setPost] = useState();
+  const [post, setPost] = useState(initPost);
   const [comments, setComments] = useState([]);
   const router = useRouter();
   const { id } = router.query;
@@ -95,12 +95,15 @@ export async function getServerSideProps(context) {
   const providers = await getProviders();
   const session = await getSession(context);
 
-  return {
-    props: {
-      trendingResults,
-      followResults,
-      providers,
-      session,
-    },
-  };
+  onSnapshot(doc(db, "posts", id), (snapshot) => {
+    return {
+      props: {
+        trendingResults,
+        followResults,
+        providers,
+        session,
+        initPost: snapshot.data(),
+      },
+    };
+  });
 }
