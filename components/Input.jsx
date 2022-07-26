@@ -68,7 +68,7 @@ const Input = () => {
   };
 
   return (
-    <div className={`border-b border-gray-700 p-3 flex space-x-3   overflow-y-scroll  ${loading && "opacity-60"}`}>
+    <div className={`border-b border-gray-700 p-3 flex space-x-3   overflow-auto  ${loading && "opacity-60"}`}>
       <img src={session.user.image} alt="프로필 이미지" className="rounded-full cursor-pointer w-11 h-11" />
       <div className=" divide-y divide-gray-700  w-full">
         <div className={`${selectedFile && "pb-7"} ${input && "space-y-2.5"}`}>
