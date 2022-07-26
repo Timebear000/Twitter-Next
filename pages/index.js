@@ -8,7 +8,7 @@ import { getProviders, getSession, useSession } from "next-auth/react";
 import Login from "../components/Login";
 import Modal from "../components/Modal";
 import { modalStatus } from "../store/StatusStore";
-
+import Widgets from "../components/Widgets";
 export default function Home({ trendingResults, followResults, providers }) {
   const { data: session } = useSession();
   const isOpen = modalStatus((state) => state.modalState);
@@ -34,6 +34,8 @@ export default function Home({ trendingResults, followResults, providers }) {
         {/* Feed */}
         <Feed />
         {/* Widgets */}
+        <Widgets trendingResults={trendingResults} followResults={followResults} />
+
         {/* Modal */}
         {isOpen && <Modal />}
       </main>
