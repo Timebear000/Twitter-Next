@@ -1,4 +1,4 @@
-import { collection, doc, onSnapshot, orderBy, query } from "@firebase/firestore";
+import { collection, doc, onSnapshot, orderBy, query, getDoc } from "@firebase/firestore";
 import { getProviders, getSession, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -17,11 +17,10 @@ import Widgets from "../components/Widgets";
 function PostPage({ trendingResults, followResults, providers, initPost }) {
   const { data: session } = useSession();
   const isOpen = modalStatus((state) => state.modalState);
-  const [post, setPost] = useState(initPost);
+  const [post, setPost] = useState();
   const [comments, setComments] = useState([]);
   const router = useRouter();
   const { id } = router.query;
-
   // 해당 게시글 가져오기 DB 변경될떄 마다
   useEffect(
     () =>
@@ -46,14 +45,12 @@ function PostPage({ trendingResults, followResults, providers, initPost }) {
     <div>
       {/* 헤더 설정 */}
       <Head>
-        <title>
-          {post?.username} on Twitter: {post?.text}
-        </title>
-        <meta name="description" content={post?.text} />
+        <title>{`${initPost?.username} on Twitter: ${initPost?.text}`}</title>
+        <meta name="description" content={initPost?.text} />
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-        <meta property="og:title" content={`${post?.username} on Twitter`} />
+        <meta property="og:title" content={`${initPost?.username} on Twitter`} />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content={post?.image} />
+        <meta property="og:image" content={initPost?.image} />
         <meta property="og:article:author" content={session.user.name} />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -94,16 +91,20 @@ export async function getServerSideProps(context) {
   const followResults = await fetch("https://jsonkeeper.com/b/WWMJ").then((res) => res.json());
   const providers = await getProviders();
   const session = await getSession(context);
-
-  onSnapshot(doc(db, "posts", id), (snapshot) => {
-    return {
-      props: {
-        trendingResults,
-        followResults,
-        providers,
-        session,
-        initPost: snapshot.data(),
-      },
-    };
-  });
+  const id = context.params.id;
+  const docRef = doc(db, "posts", id);
+  const initPost = await (await getDoc(docRef)).data();
+  // (doc(db, "posts", id), (snapshot) => {
+  //   initPost = snapshot.data();
+  //   console.log(initPost);
+  // });
+  return {
+    props: {
+      trendingResults,
+      followResults,
+      providers,
+      session,
+      initPost: { ...initPost, timestamp: {} },
+    },
+  };
 }
